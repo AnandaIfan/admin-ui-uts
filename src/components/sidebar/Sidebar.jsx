@@ -1,14 +1,35 @@
 import "./sidebar.scss";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import StoreIcon from "@mui/icons-material/Store";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import CategoryIcon from "@mui/icons-material/Category";
+import CategoryIcon from "@mui/icons-material/Category";  
+import { useContext } from "react";
+import { DarkModeContext } from "../../context/darkModeContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
+import { AuthContext } from "../../context/AuthContext";
 
 const Sidebar = () => {
+  const { dispatch } = useContext(DarkModeContext);
+
+  const { dispatch: authDispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    signOut(auth)
+     .then(() => {
+      authDispatch({ type: "LOGOUT" });
+      navigate("/login");
+     })
+     .catch((error) => {
+      console.error("Logout error: ", error);
+     });
+  };
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -52,15 +73,15 @@ const Sidebar = () => {
             <AccountCircleOutlinedIcon className="icon" />
             <span>Profile</span>
           </li>
-          <li>
+          <li onClick={handleLogout}>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
           </li>
         </ul>
       </div>
       <div className="bottom">
-        <div className="colorOption"></div>
-        <div className="colorOption"></div>
+        <div className="colorOption" onClick={() => dispatch({type: "LIGHT"})}></div>
+        <div className="colorOption" onClick={() => dispatch({type: "DARK"})}></div>
       </div>
     </div>
   );

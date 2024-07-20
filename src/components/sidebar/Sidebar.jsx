@@ -62,7 +62,7 @@ const Sidebar = () => {
             <StoreIcon className="icon" />
             <span>Orders</span>
           </li>
-          <Link to="/categories">
+          <Link data-testid="category" to="/categories">
             <li>
               <CategoryIcon className="icon" />
               <span>Categories</span>
